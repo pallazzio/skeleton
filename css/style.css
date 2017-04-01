@@ -1,0 +1,369 @@
+/*
+Theme Name: Skeleton
+Theme URI: https://github.com/pallazzio/skeleton
+Author: Jeremy Kozan
+Author URI: http://www.pallazzio.net/
+Description: Skeleton is a Bootstrap Starter theme. It includes JQuery, Bootstrap, and FontAwesome.
+Version: 1.0
+License: The MIT License
+License URI: https://opensource.org/licenses/MIT
+
+This theme is licensed under The MIT License.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+@font-face{
+	font-family: 'Open Sans';
+	src: url('../fonts/OpenSans-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face{
+	font-family: 'Roboto';
+	src: url('../fonts/Roboto-Regular.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
+*{
+	font-family: Roboto, Segoe, 'Segoe UI', 'DejaVu Sans', 'Trebuchet MS', Verdana, sans-serif;
+}
+
+h1, h1 *, h2, h2 *, h3, h3 *, h4, h4 *, h5, h5 *, h6, h6 *{
+	font-family: 'Open Sans', Segoe, 'Segoe UI', 'DejaVu Sans', 'Trebuchet MS', Verdana, sans-serif;
+}
+
+::selection{
+	color: #fff;
+	background-color: #333;
+}
+
+::-moz-selection{
+	color: #fff;
+	background-color: #333;
+}
+
+header a.logo{
+	display: block;
+	text-indent: -9999em;
+	width: 342px;
+	height: 135px;
+	background: left top no-repeat;
+}
+
+header nav.navbar{
+	margin-bottom: 0;
+	border: none;
+	border-radius: 0;
+}
+
+/* Custom .navbar-center (not standard bootstrap layout) */
+@media screen and (min-width: 768px){
+	header nav.navbar div.navbar-collapse{
+		text-align: center; 
+		display: block;
+		line-height: 0; /* fix small bottom gap on the <ul> below this element caused by it being inline-block */
+	}
+
+	header nav.navbar div.navbar-collapse ul.navbar-center{
+		float: none;
+		display: inline-block;
+	}
+}
+
+.current-menu-ancestor{
+	background: #000;
+}
+
+.carousel,
+.carousel ul, 
+.carousel ul li{
+	padding: 0;
+	margin: 0;
+}
+
+.carousel .wrap{
+	min-height: 400px;
+	background-size: cover;
+	background-position: center center;
+}
+
+.preload-hidden{
+	display: block;
+	width: 0px;
+	height: 0px;
+	overflow: hidden;
+}
+
+.social-links{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
+.social-links li{
+	display: inline-block;
+	margin-right: 5px;
+}
+
+.social-links li:last-child{
+	margin-right: 0;
+}
+
+.social-links li a{
+	display: block;
+	width: 30px;
+	height: 30px;
+	text-indent: -9999em;
+	background: left top no-repeat url('../images/social-icons.png');
+}
+
+.social-links li.facebook a{background-position: 0px 0px;}
+.social-links li.facebook a:hover{background-position: -30px 0px;}
+
+.social-links li.twitter a{background-position: 0px -30px;}
+.social-links li.twitter a:hover{background-position: -30px -30px;}
+
+.social-links li.linkedin a{background-position: 0px -60px;}
+.social-links li.linkedin a:hover{background-position: -30px -60px;}
+
+.social-links li.google-plus a{background-position: 0px -90px;}
+.social-links li.google-plus a:hover{background-position: -30px -90px;}
+
+.social-links li.youtube a{background-position: 0px -120px;}
+.social-links li.youtube a:hover{background-position: -30px -120px;}
+
+.social-links li.rss a{background-position: 0px -150px;}
+.social-links li.rss a:hover{background-position: -30px -150px;}
+
+.social-links li.tumblr a{background-position: 0px -180px;}
+.social-links li.tumblr a:hover{background-position: -30px -180px;}
+
+main{
+	padding-bottom: 1em;
+	padding-top: 1em;
+}
+
+main article header h1.entry-title, 
+main header.page-header, 
+main header.page-header h1.page-title, 
+.sidebar-right section:first-child > h3.section-title{
+	margin-top: 0;
+}
+
+.sidebar-right{
+	padding-bottom: 0.5em;
+	padding-top: 1em;
+}
+
+aside section[class^='widget'], 
+.post-navigation{
+	clear: both;
+}
+
+span.required{
+	color: #f00;
+}
+
+form.wpcf7-form input.wpcf7-submit{
+	float: right;
+}
+
+.site-search .input-group-addon{
+	padding: 0;
+	background-color: #eee;
+}
+
+.site-search button{
+	border: none;
+	padding: 0.3em 0.5em;
+	font-size: 1.4em;
+	background-color: transparent;
+}
+
+@media (min-width: 768px) {
+	.sidebar-right input#site-search{
+		width: 180px;
+	}
+}
+
+@media (min-width: 992px) {
+	.sidebar-right input#site-search{
+		width: 175px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.sidebar-right input#site-search{
+		width: 225px;
+	}
+}
+
+main .row{
+	margin: 0;
+}
+
+.gallery{
+	padding: 0;
+	list-style-type: none;
+}
+
+.gallery li{
+	margin-bottom: 5%;
+}
+
+.gallery img{
+	width: 95%;
+	margin: 0 auto;
+}
+
+ol.comment-list{
+	list-style-type: none;
+	padding-left: 0;
+}
+
+ol.comment-list ol{
+	list-style-type: none;
+	padding-left: 1em;
+}
+
+.comment-content p{
+	padding: 0 2em;
+}
+
+footer{
+	padding: 1em;
+}
+
+footer .usa{
+	padding-right: 24px;
+	background: right top no-repeat url('../images/usa-flag.png');
+}
+
+
+
+
+
+
+
+
+
+.bs-component{
+	position: relative;
+}
+
+.bs-component .modal{
+	position: relative;
+	top: auto;
+	right: auto;
+	left: auto;
+	bottom: auto;
+	z-index: 1;
+	display: block;
+}
+
+.bs-component .modal-dialog{
+	width: 90%;
+}
+
+.bs-component .popover{
+	position: relative;
+	display: inline-block;
+	width: 220px;
+	margin: 20px;
+}
+
+#source-button{
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 100;
+	font-weight: 700;
+}
+
+.nav-tabs{
+	margin-bottom: 15px;
+}
+
+.progress{
+	margin-bottom: 10px;
+}
+
+/*************** testing global layout 
+*{
+	background-color: #000 !important;
+	border-color: #f00 !important;
+}
+* > *{
+	background-color: #111 !important;
+}
+* > * > *{
+	background-color: #222 !important;
+}
+* > * > * > *{
+	background-color: #333 !important;
+}
+* > * > * > * > *{
+	background-color: #444 !important;
+}
+* > * > * > * > * > *{
+	background-color: #555 !important;
+}
+* > * > * > * > * > * > *{
+	background-color: #666 !important;
+}
+* > * > * > * > * > * > * > *{
+	background-color: #777 !important;
+}
+* > * > * > * > * > * > * > * > *{
+	background-color: #888 !important;
+}
+* > * > * > * > * > * > * > * > * > *{
+	background-color: #999 !important;
+}
+* > * > * > * > * > * > * > * > * > * > *{
+	background-color: #aaa !important;
+}
+* > * > * > * > * > * > * > * > * > * > * > *{
+	background-color: #bbb !important;
+}
+* > * > * > * > * > * > * > * > * > * > * > * > *{
+	background-color: #ccc !important;
+}
+* > * > * > * > * > * > * > * > * > * > * > * > * > *{
+	background-color: #ddd !important;
+}
+* > * > * > * > * > * > * > * > * > * > * > * > * > * > *{
+	background-color: #eee !important;
+}
+* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *{
+	background-color: #fff !important;
+}*/
+
+/*************** testing specific layout 
+html{
+	background-color: #eee !important;
+}
+body{
+	background-color: #ddd !important;
+}
+header, footer{
+	background-color: #ccc !important;
+}
+header .container div[class^='col']{
+	background-color: #bbb !important;
+}
+main{
+	background-color: #bbb !important;
+}
+aside{
+	background-color: #aaa !important;
+}*/
+
+
+
+
+
+
+
+
