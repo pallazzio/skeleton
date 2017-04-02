@@ -20,7 +20,7 @@ if ( ! ( isset( $_SERVER['HTTP_X_BARBA'] ) && $_SERVER['HTTP_X_BARBA'] === 'true
 		<?php wp_head(); ?>
 	</head>
 
-	<body <?php body_class(); ?>>
+	<body <?php body_class(); ?> data-gallery-fullscreen="<?php echo get_option( 'skeleton_gallery_fullscreen' ) == 'false' ? 'false' : 'true' ; ?>">
 	<header class="header">
 		<div class="container">
 			<div class="row">
@@ -94,8 +94,8 @@ if ( ! ( isset( $_SERVER['HTTP_X_BARBA'] ) && $_SERVER['HTTP_X_BARBA'] === 'true
 	
 <?php endif; // end non-xhr head section ?>
 
-<div id="xhr-wrapper">
-	<div class="xhr-container" data-page-title="<?php echo wp_title(); ?>" data-gallery-fullscreen="<?php echo get_option( 'skeleton_gallery_fullscreen' ) == 'false' ? 'false' : 'true' ; ?>">
+<div id="barba-wrapper">
+	<div class="barba-container" data-page-title="<?php echo wp_title(); ?>">
 		<div class="container">
 			<div class="row">
 				<?php

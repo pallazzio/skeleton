@@ -1,30 +1,3 @@
-var getClosest = function ( elem, selector ) {
-
-    // Element.matches() polyfill
-    if (!Element.prototype.matches) {
-        Element.prototype.matches =
-            Element.prototype.matchesSelector ||
-            Element.prototype.mozMatchesSelector ||
-            Element.prototype.msMatchesSelector ||
-            Element.prototype.oMatchesSelector ||
-            Element.prototype.webkitMatchesSelector ||
-            function(s) {
-                var matches = (this.document || this.ownerDocument).querySelectorAll(s),
-                    i = matches.length;
-                while (--i >= 0 && matches.item(i) !== this) {}
-                return i > -1;
-            };
-    }
-
-    // Get closest match
-    for ( ; elem && elem !== document; elem = elem.parentNode ) {
-        if ( elem.matches( selector ) ) return elem;
-    }
-
-    return null;
-
-};
-
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -712,7 +685,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    req.open('GET', url);
 	    req.timeout = this.xhrTimeout;
-	    req.setRequestHeader('X-Barba', 'true');
+	    req.setRequestHeader('x-barba', 'yes');
 	    req.send();
 	
 	    return deferred.promise;
@@ -1378,10 +1351,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (element.classList.contains(this.ignoreClassLink))
 	      return false;
-			
-			//JQuery gallery images
-			if (getClosest(element, '.gallery'))
-				return false;
 	
 	    return true;
 	  },
@@ -1531,7 +1500,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @type {String}
 	   * @default
 	   */
-	  wrapperId: 'xhr-wrapper',
+	  wrapperId: 'barba-wrapper',
 	
 	  /**
 	   * Class name used to identify the containers
@@ -1540,7 +1509,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @type {String}
 	   * @default
 	   */
-	  containerClass: 'xhr-container',
+	  containerClass: 'barba-container',
 	
 	  /**
 	   * Full HTML String of the current page.
@@ -1738,4 +1707,3 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=barba.js.map

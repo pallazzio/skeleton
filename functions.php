@@ -22,7 +22,7 @@
  *
  * @package WordPress
  * @subpackage Skeleton
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 
 if(!function_exists('skeleton_setup')) :
@@ -35,8 +35,9 @@ if(!function_exists('skeleton_setup')) :
  *
  * Create your own skeleton_setup() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_action('after_setup_theme', 'skeleton_setup');
 function skeleton_setup(){
 
 	// Add default posts and comments RSS feed links to head.
@@ -86,18 +87,28 @@ function skeleton_setup(){
 	));
 }
 endif; // skeleton_setup
-add_action('after_setup_theme', 'skeleton_setup');
+
+// Init theme updater
+if( ! class_exists( 'Smashing_Updater2' ) ){
+	include_once( 'updater.php' );
+}
+$updater = new Smashing_Updater2( get_template_directory() . '/style.css' );
+$updater->set_username( 'pallazzio' );
+$updater->set_repository( 'skeleton' );
+//$updater->authorize( 'abcdefghijk1234567890' ); // Your auth code goes here for private repos
+$updater->initialize();
 
 // Register Custom Navigation Walker
-require_once('wp-bootstrap-navwalker.php');
+require_once( 'wp-bootstrap-navwalker.php' );
 
 /**
  * Registers a widget area.
  *
  * @link https://developer.wordpress.org/reference/functions/register_sidebar/
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_action('widgets_init', 'skeleton_widgets_init');
 function skeleton_widgets_init(){
 	register_sidebar(array(
 		'name'          => __('Right Sidebar', 'skeleton'),
@@ -136,12 +147,11 @@ function skeleton_widgets_init(){
 		'after_title'   => '</h3>'
 	));
 }
-add_action('widgets_init', 'skeleton_widgets_init');
 
 /**
  * Counts number of active widgets in a given sidebar
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function count_sidebar_widgets($sidebar_id, $echo = false){
 	$the_sidebars = wp_get_sidebars_widgets();
@@ -158,8 +168,9 @@ function count_sidebar_widgets($sidebar_id, $echo = false){
 /**
  * Adds "active" CSS class to dynamic sidebar widgets. Also adds numeric index class for each widget (widget-1, widget-2, etc.)
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter('dynamic_sidebar_params', 'widget_active_class');
 function widget_active_class($params) {
 	global $my_widget_num; // Global a counter array
 	$this_id = $params[0]['id']; // Get the id for the current sidebar we're processing
@@ -189,32 +200,32 @@ function widget_active_class($params) {
 
 	return $params;
 }
-add_filter('dynamic_sidebar_params', 'widget_active_class');
 
 /**
  * Handles JavaScript detection.
  *
  * Adds a `js` class to the root `<html>` element when JavaScript is detected.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_action('wp_head', 'skeleton_javascript_detection', 0);
 function skeleton_javascript_detection(){
 	echo "<script>(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>\n";
 }
-add_action('wp_head', 'skeleton_javascript_detection', 0);
 
 // Remove Emojis
 remove_action('wp_head', 'print_emoji_detection_script', 7);
 remove_action('wp_print_styles', 'print_emoji_styles');
 
 // Remove jQuery version included with WordPress. It is included below.
+add_filter('wp_enqueue_scripts', 'skeleton_unqueue', PHP_INT_MAX);
 function skeleton_unqueue(){
 	wp_dequeue_script('jquery');
 	wp_deregister_script('jquery');
 }
-add_filter('wp_enqueue_scripts', 'skeleton_unqueue', PHP_INT_MAX);
 
 // Remove certain widgets that cause 404 errors when Yoast SEO is installed
+add_action( 'widgets_init', 'skeleton_unregister_default_widgets', 11 );
 function skeleton_unregister_default_widgets() {
 	//unregister_widget('WP_Widget_Pages');
 	//unregister_widget('WP_Widget_Calendar');
@@ -229,42 +240,41 @@ function skeleton_unregister_default_widgets() {
 	//unregister_widget('WP_Widget_RSS');
 	//unregister_widget('WP_Widget_Tag_Cloud');
 	//unregister_widget('WP_Nav_Menu_Widget');
-	//unregister_widget('Twenty_Eleven_Ephemera_Widget');
 }
-add_action( 'widgets_init', 'skeleton_unregister_default_widgets', 11 );
 
 /**
  * Upon inserting an image into a post, replace 'src' with 'data-src' for lazy loading.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter('get_image_tag', 'skeleton_image_tag', 10, 1);
 function skeleton_image_tag($img){
 	return str_replace(array('src="', 'class="'), array('src="'.get_template_directory_uri().'/images/placeholder.png" data-src="', 'class="img-responsive lazy thumbnail '), $img);
 }
-add_filter('get_image_tag', 'skeleton_image_tag', 10, 1);
 
 /**
  * Enqueue scripts and styles.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_action('wp_enqueue_scripts', 'skeleton_enqueue');
 function skeleton_enqueue() {
-	wp_enqueue_style( 'skeleton-bootstrap', get_template_directory_uri().'/css/bootstrap.css', array(), '20170101', 'all' );
-	wp_enqueue_style( 'skeleton-smartmenus-bootstrap', get_template_directory_uri().'/css/jquery.smartmenus.bootstrap.css', array(), '20170101', 'all' );
-	wp_enqueue_style( 'skeleton-font-awesome', get_template_directory_uri().'/css/font-awesome.css', array(), '20170101', 'all' );
-	wp_enqueue_style( 'skeleton-gallery', get_template_directory_uri().'/css/gallery.css', array(), '20170101', 'all' );
-	wp_enqueue_style( 'skeleton-style', get_template_directory_uri().'/css/style.css', array(), '20170101', 'all' );
+	wp_enqueue_style( 'skeleton-bootstrap', get_template_directory_uri() . '/css/bootstrap.css', array(), '20170101', 'all' );
+	wp_enqueue_style( 'skeleton-smartmenus-bootstrap', get_template_directory_uri() . '/css/jquery.smartmenus.bootstrap.css', array(), '20170101', 'all' );
+	wp_enqueue_style( 'skeleton-font-awesome', get_template_directory_uri() . '/css/font-awesome.css', array(), '20170101', 'all' );
+	wp_enqueue_style( 'skeleton-gallery', get_template_directory_uri() . '/css/blueimp-gallery.min.css', array(), '20170101', 'all' );
+	wp_enqueue_style( 'skeleton-style', get_template_directory_uri() . '/css/style.css', array(), '20170101', 'all' );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 
-	wp_enqueue_script( 'skeleton-jquery', get_template_directory_uri().'/js/jquery.js', array(), '20170101', true );
-	wp_enqueue_script( 'skeleton-bootstrap', get_template_directory_uri().'/js/bootstrap.js', array(), '20170101', true );
-	wp_enqueue_script( 'skeleton-smartmenus', get_template_directory_uri().'/js/jquery.smartmenus.js', array(), '20170101', true );
-	wp_enqueue_script( 'skeleton-smartmenus-bootstrap', get_template_directory_uri().'/js/jquery.smartmenus.bootstrap.js', array(), '20170101', true );
-	wp_enqueue_script( 'skeleton-lazyload', get_template_directory_uri().'/js/lazyload.js', array(), '20170101', true );
-	wp_enqueue_script( 'skeleton-gallery', get_template_directory_uri().'/js/gallery.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-jquery', get_template_directory_uri() . '/js/jquery.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-bootstrap', get_template_directory_uri() . '/js/bootstrap.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-smartmenus', get_template_directory_uri() . '/js/jquery.smartmenus.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-smartmenus-bootstrap', get_template_directory_uri() . '/js/jquery.smartmenus.bootstrap.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-lazyload', get_template_directory_uri() . '/js/lazyload.js', array(), '20170101', true );
+	wp_enqueue_script( 'skeleton-gallery', get_template_directory_uri() . '/js/blueimp-gallery.min.js', array(), '20170101', true );
 	
 	if ( get_option( 'skeleton_page_transition' ) != 'disabled' ) {
 		wp_enqueue_script( 'skeleton-barba', get_template_directory_uri().'/js/barba.js', array(), '20170101', true );
@@ -278,14 +288,15 @@ function skeleton_enqueue() {
 	
 	wp_enqueue_script( 'skeleton-script', get_template_directory_uri().'/js/script.js', array(), '20170101', true );
 }
-add_action('wp_enqueue_scripts', 'skeleton_enqueue');
 
 /**
  * Enqueue styles for asynchronous delivery.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
-/*function skeleton_enqueue_async_style(){ ?>
+/*
+add_action('wp_footer', 'skeleton_enqueue_async_style', 999);
+function skeleton_enqueue_async_style(){ ?>
 	<script type="text/javascript">
 		// defer additional styles for page speed purposes
 		$(document).ready(function(){
@@ -299,14 +310,16 @@ add_action('wp_enqueue_scripts', 'skeleton_enqueue');
 		});
 	</script>
 <?php }
-add_action('wp_footer', 'skeleton_enqueue_async_style', 999);*/
+*/
 
 /**
  * Enqueue scripts for asynchronous delivery.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
-/*function skeleton_enqueue_async_script(){ ?>
+/*
+add_action('wp_footer', 'skeleton_enqueue_async_script', 999);
+function skeleton_enqueue_async_script(){ ?>
 	<script type="text/javascript">
 		// defer additional javascript for page speed purposes
 		$(document).ready(){function(){
@@ -319,7 +332,7 @@ add_action('wp_footer', 'skeleton_enqueue_async_style', 999);*/
 		}};
 	</script>
 <?php }
-add_action('wp_footer', 'skeleton_enqueue_async_script', 999);*/
+*/
 
 /* Stop WordPress from ammoyoingly adding <br /> and <p></p> tags. If I want them... I WILL ADD THEM! */
 //remove_filter('the_content','wpautop');
@@ -327,8 +340,9 @@ add_action('wp_footer', 'skeleton_enqueue_async_script', 999);*/
 /**
  * Replace comment form fields with bootstrap compliant markup
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter('comment_form_default_fields', 'skeleton_comment_form_fields');
 function skeleton_comment_form_fields($fields){
 	$commenter = wp_get_current_commenter();
 	
@@ -347,13 +361,13 @@ function skeleton_comment_form_fields($fields){
 	
 	return $fields;
 }
-add_filter('comment_form_default_fields', 'skeleton_comment_form_fields');
 
 /**
  * Also replace comment form textarea with bootstrap compliant markup
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter('comment_form_defaults', 'skeleton_comment_form');
 function skeleton_comment_form( $args ) {
 	$args['comment_field'] = '<div class="form-group comment-form-comment">'.
 		'<label for="comment">'._x('Comment', 'noun').'</label>'.
@@ -362,19 +376,20 @@ function skeleton_comment_form( $args ) {
 	
 	return $args;
 }
-add_filter('comment_form_defaults', 'skeleton_comment_form');
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for content images
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  *
  * @param string $sizes A source size value for use in a 'sizes' attribute.
  * @param array  $size  Image size. Accepts an array of width and height
  *                      values in pixels (in that order).
  * @return string A source size value for use in a content image 'sizes' attribute.
- 
+ */
+/*
+add_filter('wp_calculate_image_sizes', 'skeleton_content_image_sizes_attr', 10 , 2);
 function skeleton_content_image_sizes_attr($sizes, $size){
 	$width = $size[0];
 
@@ -388,19 +403,21 @@ function skeleton_content_image_sizes_attr($sizes, $size){
 	}
 	return $sizes;
 }
-add_filter('wp_calculate_image_sizes', 'skeleton_content_image_sizes_attr', 10 , 2);*/
+*/
 
 /**
  * Add custom image sizes attribute to enhance responsive image functionality
  * for post thumbnails
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  *
  * @param array $attr Attributes for the image markup.
  * @param int   $attachment Image attachment ID.
  * @param array $size Registered image size or flat array of height and width dimensions.
  * @return string A source size value for use in a post thumbnail 'sizes' attribute.
- 
+ */
+/*
+add_filter('wp_get_attachment_image_attributes', 'skeleton_post_thumbnail_sizes_attr', 10 , 3);
 function skeleton_post_thumbnail_sizes_attr($attr, $attachment, $size){
 	if ('post-thumbnail' === $size){
 		is_active_sidebar('sidebar-right') && $attr['sizes'] = '(max-width: 709px) 85vw, (max-width: 909px) 67vw, (max-width: 984px) 60vw, (max-width: 1362px) 62vw, 840px';
@@ -408,12 +425,12 @@ function skeleton_post_thumbnail_sizes_attr($attr, $attachment, $size){
 	}
 	return $attr;
 }
-add_filter('wp_get_attachment_image_attributes', 'skeleton_post_thumbnail_sizes_attr', 10 , 3);*/
+*/
 
 /**
  * Get image information.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function skeleton_get_attachment($attachment_id){
 	$attachment = get_post($attachment_id);
@@ -430,8 +447,9 @@ function skeleton_get_attachment($attachment_id){
 /**
  * Replace default gallery HTML with Bootstrap compliant markup.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter( 'post_gallery', 'skeleton_gallery', 10, 2 );
 function skeleton_gallery ( $output, $attr ) {
 	global $post;
 	
@@ -510,7 +528,6 @@ function skeleton_gallery ( $output, $attr ) {
 	
 	return $output;
 }
-add_filter( 'post_gallery', 'skeleton_gallery', 10, 2 );
 
 // add largest allowable image size
 add_image_size( 'fullscreen', 1600, 1600, false );
@@ -521,8 +538,9 @@ add_filter('jpeg_quality', function($arg){return 60;});
 /**
  * Deletes the original uploaded image and uses the large format in its place.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
+add_filter( 'wp_generate_attachment_metadata', 'skeleton_replace_uploaded_image', 10, 1 );
 function skeleton_replace_uploaded_image ( $image_data ) {
 	// if there is no large image : return
 	if ( !isset ( $image_data['sizes']['large'] ) ) return $image_data;
@@ -546,7 +564,6 @@ function skeleton_replace_uploaded_image ( $image_data ) {
 
 	return $image_data;
 }
-add_filter( 'wp_generate_attachment_metadata', 'skeleton_replace_uploaded_image', 10, 1 );
 
 // for debugging. write to error log.
 if ( !function_exists( 'write_log' ) ) {
@@ -591,11 +608,11 @@ function skeleton_theme_settings_page() { ?>
 <?php	}
 
 // Add pages for settings under "Settings" in admin menu
+add_action( 'admin_menu', 'skeleton_add_submenu_items' );
 function skeleton_add_submenu_items() {
 	add_submenu_page( 'options-general.php', 'Company', 'Company', 'manage_options', 'company-options', 'skeleton_company_settings_page', null, 99 );
 	add_submenu_page( 'options-general.php', 'Theme', 'Theme', 'manage_options', 'theme-options', 'skeleton_theme_settings_page', null, 99 );
 }
-add_action( 'admin_menu', 'skeleton_add_submenu_items' );
 
 function skeleton_display_page_transition_element() { ?>
 	<select name="skeleton_page_transition" id="skeleton_page_transition">
@@ -719,6 +736,7 @@ function skeleton_display_foursquare_element() { ?>
 	<input class="regular-text" type="text" name="skeleton_foursquare_url" id="skeleton_foursquare_url" value="<?php echo get_option('skeleton_foursquare_url'); ?>" />
 <?php }
 
+add_action( 'admin_init', 'skeleton_display_theme_effects_fields' );
 function skeleton_display_theme_effects_fields() {
 	add_settings_section( 'theme-effects-settings', 'Effects', null, 'theme-options' );
 	
@@ -728,8 +746,8 @@ function skeleton_display_theme_effects_fields() {
 	register_setting( 'theme-settings', 'skeleton_page_transition' );
 	register_setting( 'theme-settings', 'skeleton_gallery_fullscreen' );
 }
-add_action( 'admin_init', 'skeleton_display_theme_effects_fields' );
 
+add_action( 'admin_init', 'skeleton_display_theme_layout_fields' );
 function skeleton_display_theme_layout_fields() {
 	add_settings_section( 'theme-layout-settings', 'Layout', null, 'theme-options' );
 	
@@ -741,8 +759,8 @@ function skeleton_display_theme_layout_fields() {
 	register_setting( 'theme-settings', 'skeleton_carousel_home_position' );
 	register_setting( 'theme-settings', 'skeleton_nav_primary_dropdowns_linked' );
 }
-add_action( 'admin_init', 'skeleton_display_theme_layout_fields' );
 
+add_action( 'admin_init', 'skeleton_display_company_basic_info_fields' );
 function skeleton_display_company_basic_info_fields() {
 	add_settings_section( 'company-basic-info', 'Basic Info', null, 'company-options' );
 
@@ -752,8 +770,8 @@ function skeleton_display_company_basic_info_fields() {
 	register_setting( 'company-settings', 'skeleton_company_phone' );
 	register_setting( 'company-settings', 'skeleton_company_address' );
 }
-add_action( 'admin_init', 'skeleton_display_company_basic_info_fields' );
 
+add_action( 'admin_init', 'skeleton_display_company_technical_info_fields' );
 function skeleton_display_company_technical_info_fields() {
 	add_settings_section( 'company-technical-info', 'Technical Info', null, 'company-options' );
 
@@ -767,8 +785,8 @@ function skeleton_display_company_technical_info_fields() {
 	register_setting( 'company-settings', 'skeleton_bing_domain_validation' );
 	register_setting( 'company-settings', 'skeleton_yahoo_domain_validation' );
 }
-add_action( 'admin_init', 'skeleton_display_company_technical_info_fields' );
 
+add_action( 'admin_init', 'skeleton_display_company_social_info_fields' );
 function skeleton_display_company_social_info_fields() {
 	add_settings_section( 'company-social-info', 'Social Info', null, 'company-options' );
 
@@ -804,7 +822,6 @@ function skeleton_display_company_social_info_fields() {
 	register_setting( 'company-settings', 'skeleton_stumbleupon_url' );
 	register_setting( 'company-settings', 'skeleton_foursquare_url' );
 }
-add_action( 'admin_init', 'skeleton_display_company_social_info_fields' );
 
 /**
  * Displays an optional post thumbnail.
@@ -814,7 +831,7 @@ add_action( 'admin_init', 'skeleton_display_company_social_info_fields' );
  *
  * Create your own skeleton_post_thumbnail() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function skeleton_post_thumbnail(){
 	if(post_password_required() || is_attachment() || !has_post_thumbnail()){
@@ -844,10 +861,11 @@ function skeleton_post_thumbnail(){
  *
  * Create your own skeleton_excerpt() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  *
  * @param string $class Optional. Class string of the div element. Defaults to 'entry-summary'.
  */
+add_filter('excerpt', 'skeleton_excerpt');
 function skeleton_excerpt($class = 'entry-summary'){
 	$class = esc_attr($class);
 		if(has_excerpt() || is_search()): ?>
@@ -856,7 +874,6 @@ function skeleton_excerpt($class = 'entry-summary'){
 		</div><!-- .<?php echo $class; ?> -->
 	<?php endif;
 }
-add_filter('excerpt', 'skeleton_excerpt');
 
 /**
  * Replaces "[...]" (appended to automatically generated excerpts) with ... and
@@ -864,10 +881,11 @@ add_filter('excerpt', 'skeleton_excerpt');
  *
  * Create your own skeleton_excerpt_more() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  *
  * @return string 'Continue reading' link prepended with an ellipsis.
  */
+add_filter('excerpt_more', 'skeleton_excerpt_more');
 function skeleton_excerpt_more(){
 	$link = sprintf('<a href="%1$s" class="more-link">%2$s</a>',
 		esc_url(get_permalink( get_the_ID())),
@@ -876,14 +894,13 @@ function skeleton_excerpt_more(){
 	);
 	return ' &hellip; '.$link;
 }
-add_filter('excerpt_more', 'skeleton_excerpt_more');
 
 /**
  * Determines whether blog/site has more than one category.
  *
  * Create your own skeleton_categorized_blog() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  *
  * @return bool True if there is more than one category, false otherwise.
  */
@@ -916,7 +933,7 @@ function skeleton_categorized_blog(){
  *
  * Create your own skeleton_entry_meta() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function skeleton_entry_meta(){
 	if('post' === get_post_type()){
@@ -958,7 +975,7 @@ function skeleton_entry_meta(){
  *
  * Create your own skeleton_entry_date() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function skeleton_entry_date(){
 	$time_string = '<time class="entry-date published" datetime="%1$s">%2$s</time>';
@@ -980,7 +997,7 @@ function skeleton_entry_date(){
  *
  * Create your own skeleton_entry_taxonomies() function to override in a child theme.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function skeleton_entry_taxonomies(){
 	$categories_list = get_the_category_list(_x(', ', 'Used between list items, there is a space after the comma.', 'skeleton'));
@@ -1003,7 +1020,7 @@ function skeleton_entry_taxonomies(){
 /**
  * Get rid of some unnecessary WordPress stuff.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 remove_action('wp_head', 'wp_shortlink_wp_head', 10, 0);
 remove_action('wp_head', 'wp_generator');
@@ -1011,7 +1028,7 @@ remove_action('wp_head', 'wp_generator');
 /**
  * Check page settings for page layout.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 function get_skeleton_page_layout(){
 	$skeleton_page_layout = get_post_meta( get_the_ID(), '_skeleton_page_layout', 1, true );
@@ -1040,9 +1057,12 @@ function get_skeleton_page_layout(){
 		$skeleton_page_layout = 'sidebar_none';
 		
 	endif;
+	
 	return $skeleton_page_layout;
 }
 
+add_action('load-post.php', 'skeleton_post_meta_boxes_setup');
+add_action('load-post-new.php', 'skeleton_post_meta_boxes_setup');
 function skeleton_post_meta_boxes_setup(){
   /* Add meta boxes on the 'add_meta_boxes' hook. */
   add_action('add_meta_boxes', 'skeleton_add_post_meta_boxes');
@@ -1050,8 +1070,6 @@ function skeleton_post_meta_boxes_setup(){
 	/* Save post meta on the 'save_post' hook. */
 	add_action('save_post', 'skeleton_save_page_layout_meta', 10, 2);
 }
-add_action('load-post.php', 'skeleton_post_meta_boxes_setup');
-add_action('load-post-new.php', 'skeleton_post_meta_boxes_setup');
 
 /* Create meta boxes on the post editor screen. */
 function skeleton_add_post_meta_boxes(){
@@ -1119,7 +1137,7 @@ function skeleton_save_page_layout_meta($post_id, $post){
 /**
  * Add custom user type and extra user meta fields for employees.
  *
- * @since Skeleton 1.0
+ * @since Skeleton 0.0.1
  */
 remove_role('employee');
 $result = add_role('employee', 'Employee', array('read' => true));
@@ -1171,6 +1189,7 @@ function save_employee_profile_fields($user_id){
  * @return string
  */
 /*
+add_filter('login_redirect', 'skeleton_login_redirect', 10, 3);
 function skeleton_login_redirect($redirect_to, $request, $user){
 	if(isset($user->roles) && is_array($user->roles)){
 		if(in_array('employee', $user->roles)){
@@ -1180,7 +1199,6 @@ function skeleton_login_redirect($redirect_to, $request, $user){
 		}
 	}
 }
-add_filter('login_redirect', 'skeleton_login_redirect', 10, 3);
 */
 
 

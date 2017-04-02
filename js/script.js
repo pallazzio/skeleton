@@ -1,18 +1,21 @@
-//******** Add pdf and other filetypes to barba's exclude list. **************************
+//******** Add certain links to barba's exclude list. **************************
 Barba.Pjax.originalPreventCheck = Barba.Pjax.preventCheck;
 
 Barba.Pjax.preventCheck = function(evt, element) {
-  if (!Barba.Pjax.originalPreventCheck(evt, element)) {
-    return false;
-  }
-
-  if (/.pdf/.test(element.href.toLowerCase())) {
-    return false;
-  }
-	
-	if (/wp-admin/.test(element.href.toLowerCase())) {
+	// Only use barba if href ends with '/'
+  if ( /\//.test( element.href.slice( -1 ) ) ) {
+		return true;
+  } else {
 		return false;
 	}
+	
+	// Do barba's normal chacking.
+  if (!Barba.Pjax.originalPreventCheck(evt, element))
+    return false;
+	
+	// Don't use barba on the WordPress Admin bar.
+	if ( /wp-admin/.test( element.href.toLowerCase() ) )
+		return false;
 
   return true;
 };
@@ -61,7 +64,7 @@ Barba.Dispatcher.on('transitionCompleted', function(currentStatus, prevStatus){ 
 	$('main table').addClass('table').addClass('table-striped').addClass('table-condensed');
 	
 	//******** Barba does not update page title and other metadata. We have to inject it.
-	var page_title = $( '.xhr-container' ).data( 'page-title' );
+	var page_title = $( '.barba-container' ).data( 'page-title' );
 	$( 'title' ).text( page_title );
 	$( 'meta[property="og\\:title"]' ).attr( 'content', page_title );
 	$( 'meta[name="twitter\\:title"]' ).attr( 'content', page_title );
@@ -75,8 +78,8 @@ Barba.Dispatcher.on('transitionCompleted', function(currentStatus, prevStatus){ 
 // ******** END PAGE LOAD / TRANSITION FUNCTIONS ******************************************
 
 //******** Init lightbox galleries.
-$('body').on('click', '.gallery a', function(e){
-	// insert the gallery container with all the required elements
+$('body').on('click', '.gallery a', function(event){
+	// inject the gallery container with all the required elements
 	if(!$('#blueimp-gallery').length){
 		$('body').append(
 			'<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls">'+
@@ -86,20 +89,21 @@ $('body').on('click', '.gallery a', function(e){
 				'<a class="next">›</a>'+
 				'<a class="close">×</a>'+
 				'<a class="play-pause"></a>'+
+				'<ol class="indicator"></ol>'+
 			'</div>');
 	}
 	
 	// launch the requested gallery
-	e = e || window.e;
-	t = e.target || e.srcElement;
-	k = t.src ? t.parentNode : t;
-	o = {
-		index: k,
-		event: e,
-		fullScreen: $('.xhr-container').data('gallery-fullscreen'),
-	};
-	s = $(this).closest('.gallery').find('a');
-	blueimp.Gallery(s, o);
+	event = event || window.event;
+	var target = event.target || event.srcElement,
+			link = target.src ? target.parentNode : target,
+			links = $(this).closest('.gallery').find('a'),
+			options = {
+				index: link,
+				event: event,
+				fullScreen: $('body').data('gallery-fullscreen')
+			};
+	blueimp.Gallery(links, options);
 })
 
 //******** Prevent links whose href="#" from doing anything.

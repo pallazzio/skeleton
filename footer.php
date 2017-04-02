@@ -52,8 +52,8 @@
 				?>
 			</div><!-- /.row -->
 		</div><!-- /.container -->
-	</div><!-- /.xhr-container -->
-</div><!-- /.xhr-wrapper -->
+	</div><!-- /.barba-container -->
+</div><!-- /.barba-wrapper -->
 
 <?php if ( ! ( isset( $_SERVER['HTTP_X_BARBA'] ) && $_SERVER['HTTP_X_BARBA'] === 'true' ) ) : // begin non-xhr footer section ?>
 
