@@ -89,13 +89,13 @@ function skeleton_setup(){
 endif; // skeleton_setup
 
 // Init theme updater
-if( ! class_exists( 'Smashing_Updater2' ) ){
+if( ! class_exists( 'Pallazzio_Theme_Updater' ) ){
 	include_once( 'updater.php' );
 }
-$updater = new Smashing_Updater2( get_template_directory() . '/style.css' );
+$updater = new Pallazzio_Theme_Updater( 'skeleton' );
 $updater->set_username( 'pallazzio' );
 $updater->set_repository( 'skeleton' );
-//$updater->authorize( 'abcdefghijk1234567890' ); // Your auth code goes here for private repos
+//$updater->authorize( 'abcdefghijk1234567890' ); // auth code for private repos
 $updater->initialize();
 
 // Register Custom Navigation Walker
