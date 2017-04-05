@@ -36,6 +36,7 @@ class Pallazzio_Theme_Updater {
 
 	public function initialize() {
 		add_filter( 'pre_set_site_transient_update_themes', array( $this, 'modify_transient' ), 10, 1 );
+		add_filter( 'upgrader_pre_install', array( $this, 'before_install' ), 10, 3 );
 		add_filter( 'upgrader_post_install', array( $this, 'after_install' ), 10, 3 );
 	}
 
@@ -58,6 +59,7 @@ class Pallazzio_Theme_Updater {
 					$theme = array( // setup our theme info
 						'theme' => $this->theme->template,
 						'url' => $this->theme->get( 'ThemeURI' ),
+						'slug' => $this->theme->template,
 						'package' => $new_files,
 						'new_version' => $this->github_response['tag_name']
 					);
@@ -73,16 +75,45 @@ class Pallazzio_Theme_Updater {
 		return $transient; // Return filtered transient
 	}
 
-	public function after_install( $response, $hook_extra, $result ) {
-		global $wp_filesystem; // Get global FS object
+	public function before_install( $response, $hook_extra ) {
+		//global $wp_filesystem; // Get global FS object
+		
+		write_log('pppppppppppppppppp');
+		write_log($response);
+		//write_log($hook_extra);
+		//write_log($result);
 
 		$install_directory = get_template_directory(); // Our theme directory
+		//$result['destination_name'] = $this->theme->template; // Set the destination name for the rest of the stack
+		//$result['remote_destination'] = $install_directory; // Set the remote destination for the rest of the stack
+		//$wp_filesystem->move( $result['destination'], $install_directory ); // Move files to the theme dir
+		//$result['destination'] = $install_directory; // Set the destination for the rest of the stack
+		
+		write_log($response);
+		//write_log($hook_extra);
+		//write_log($result);
+
+		return $response;
+	}
+
+	public function after_install( $response, $hook_extra, $result ) {
+		global $wp_filesystem; // Get global FS object
+		
+		write_log($response);
+		write_log($hook_extra);
+		write_log($result);
+
+		$install_directory = get_template_directory(); // Our theme directory
+		$result['destination_name'] = $this->theme->template; // Set the destination name for the rest of the stack
+		$result['remote_destination'] = $install_directory; // Set the remote destination for the rest of the stack
 		$wp_filesystem->move( $result['destination'], $install_directory ); // Move files to the theme dir
 		$result['destination'] = $install_directory; // Set the destination for the rest of the stack
-
-		//if ( $this->active ) { // If it was active
-		//	activate_plugin( $this->basename ); // Reactivate
-		//}
+		
+		switch_theme( $this->theme->template );
+		
+		write_log($response);
+		write_log($hook_extra);
+		write_log($result);
 
 		return $result;
 	}
@@ -107,7 +138,7 @@ class Pallazzio_Theme_Updater {
 				if( $this->authorize_token ) { // Is there an access token?
 						$response['zipball_url'] = add_query_arg( 'access_token', $this->authorize_token, $response['zipball_url'] ); // Update our zip url with token
 				}
-
+write_log($response);
 				$this->github_response = $response; // Set it to our property
 		}
 	}
