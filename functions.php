@@ -25,6 +25,9 @@
  * @since Skeleton 0.0.1
  */
 
+require_once 'includes/pallazzio-wpghu/pallazzio-wpghu.php';
+new Pallazzio_WPGHU( __FILE__, 'pallazzio' );
+
 if(!function_exists('skeleton_setup')) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -87,16 +90,6 @@ function skeleton_setup(){
 	));
 }
 endif; // skeleton_setup
-
-// Init theme updater
-if( ! class_exists( 'Pallazzio_Theme_Updater' ) ){
-	include_once( 'updater.php' );
-}
-$updater = new Pallazzio_Theme_Updater( 'skeleton' );
-$updater->set_username( 'pallazzio' );
-$updater->set_repository( 'skeleton' );
-//$updater->authorize( 'abcdefghijk1234567890' ); // auth code for private repos
-$updater->initialize();
 
 // Register Custom Navigation Walker
 require_once( 'wp-bootstrap-navwalker.php' );
