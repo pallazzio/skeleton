@@ -1,6 +1,6 @@
-[submodule "includes/pallazzio-wordpress-github-updater"]
-	path = includes/pallazzio-wordpress-github-updater
-	url = https://github.com/pallazzio/pallazzio-wordpress-github-updater
+[submodule "includes/pallazzio-wpghu"]
+	path = includes/pallazzio-wpghu
+	url = https://github.com/pallazzio/pallazzio-wpghu
 [submodule "includes/pallazzio-wordpress-settings-framework"]
 	path = includes/pallazzio-wordpress-settings-framework
 	url = https://github.com/pallazzio/pallazzio-wordpress-settings-framework
